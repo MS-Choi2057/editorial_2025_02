@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>당근일기 - Second-hand Diary</title>
+    
+    <style>
+        /* [폰트 불러오기] */
+        @font-face {
+            font-family: 'EF_jejudoldam';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2210-EF@1.0/EF_jejudoldam.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'KkuBulLim';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/BMkkubulimTTF-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* [기본 설정] */
+        :root {
+            --bg-color: #FFFFFF;
+            --text-color: #333333;
+            --accent-color: #555555;
+            --nav-height: 120px; 
+            --section-gap: 250px; 
+            
+            --font-title: 'EF_jejudoldam', cursive;
+            --font-body: 'KkuBulLim', cursive; 
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-image: url('texture.jpg');
+            background-repeat: repeat;
+            background-color: var(--bg-color);
+            background-attachment: fixed;
+            color: var(--text-color);
+            font-family: var(--font-body); 
+            font-size: 1.15rem; 
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: var(--nav-height); 
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.3s;
+        }
+
+        a:hover {
+            opacity: 0.6;
+        }
+
+        h1, h2, h3, .nav-logo, .archive-header, .intro-title, .modal-title, .example-header, .spending-title, .manner-title {
+            font-family: var(--font-title);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        /* [레이아웃 공통] */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 10; 
+        }
+
+        /* --- 스크롤 애니메이션 --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: linear-gradient(to bottom, var(--bg-color) 40%, rgba(249, 247, 241, 0) 100%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .nav-logo:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            list-style: none;
+            font-size: 1.2rem;
+            font-family: var(--font-body);
+        }
+
+
+        /* [Intro Section] */
+        #intro {
+            min-height: calc(100vh - var(--nav-height)); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;     
+            text-align: center;
+            margin-bottom: var(--section-gap);
+        }
+
+        .intro-title {
+            font-size: 3rem;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            word-break: keep-all;
+        }
+
+        .intro-text {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            margin-bottom: 60px; 
+            font-family: var(--font-body);
+        }
+
+        .scroll-hint {
+            font-size: 0.9rem;
+            color: #888;
+            font-family: var(--font-body);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            animation: bounce 2s infinite ease-in-out; 
+            cursor: default;
+        }
+
+
+        /* [About Section] */
+        #about {
+            margin-bottom: var(--section-gap);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 50px;
+            align-items: center; 
+        }
+
+        .about-img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .about-text {
+            font-size: 1.15rem;
+            word-break: keep-all;
+        }
+
+        /* [Spending Stats Section] */
+        #spending-stats {
+            margin-bottom: var(--section-gap);
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .spending-title {
+            font-size: 1.8rem;
+            margin-bottom: 40px;            
+            line-height: 1.3;
+        }
+
+        .chart-wrapper {
+            max-width: 600px;
+            margin: 0 auto; 
+            margin-bottom: 60px; /* 매너온도 그래프와의 간격 */
+        }
+
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 220px; 
+            padding-top: 20px;
+            font-family: var(--font-body);
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            width: 14%;
+            height: 100%;
+            position: relative;
+        }
+
+        .bar-value {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            color: #888;
+            font-family: var(--font-title);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease 0.5s; 
+        }
+
+        .bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px 4px 2px 2px;
+            border: 2px solid transparent; 
+            transform-origin: bottom;
+            transform: scaleY(0); 
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .animate-on-scroll.is-visible .bar {
+            transform: scaleY(1);
+        }
+        
+        .animate-on-scroll.is-visible .bar-value {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bar.highlight {
+            background-color: #ff8a3d; 
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        .bar-label {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* ----------------------------------------------------------- */
+        /* [추가된 부분] 매너온도 꺾은선 그래프 스타일 */
+        /* ----------------------------------------------------------- */
+        
+        .manner-section {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .manner-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .manner-highlight {
+            font-size: 2rem;
+            color: #ff6f0f;
+            font-family: var(--font-body);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .line-chart-svg {
+            width: 100%;
+            height: auto;
+            max-height: 250px;
+            overflow: visible;
+        }
+
+        /* SVG 라인 애니메이션 */
+        .chart-line-path {
+            fill: none;
+            stroke: #ff6f0f;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000; 
+            stroke-dashoffset: 1000; /* 처음엔 숨김 */
+            transition: stroke-dashoffset 2s ease-out 0.5s; /* 0.5초 딜레이 후 그려짐 */
+        }
+
+        .animate-on-scroll.is-visible .chart-line-path {
+            stroke-dashoffset: 0; /* 슥 그려짐 */
+        }
+
+        /* 포인트 점 */
+        .chart-point {
+            fill: #fff;
+            stroke: #ff6f0f;
+            stroke-width: 3;
+            r: 5;
+            opacity: 0;
+            transition: opacity 0.3s ease 2s; /* 라인이 다 그려진 후 등장 */
+        }
+
+        .animate-on-scroll.is-visible .chart-point {
+            opacity: 1;
+        }
+
+        /* 텍스트 라벨 */
+        .chart-text {
+            font-family: var(--font-body);
+            font-size: 14px;
+            fill: #666;
+            text-anchor: middle;
+            opacity: 0;
+            transition: opacity 0.5s ease 2.2s; /* 점보다 조금 늦게 등장 */
+        }
+
+        .animate-on-scroll.is-visible .chart-text {
+            opacity: 1;
+        }
+
+        /* ----------------------------------------------------------- */
+
+
+        /* [Archive Section] */
+        #archive {
+            margin-bottom: var(--section-gap);
+        }
+
+        .archive-header {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 25px;
+            row-gap: 50px;
+        }
+
+        .archive-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer; 
+        }
+
+        .archive-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+        
+        .archive-item:hover .archive-img-wrapper {
+            transform: scale(1.05) translateY(-5px) rotate(7deg);
+        }
+
+        .archive-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .archive-title {
+            font-size: 1.1rem;
+            font-weight: normal; 
+        }
+
+
+        /* [Example Section] */
+        #example {
+            margin-bottom: 300px; 
+        }
+
+        .example-header {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2rem;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .example-img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+            background-color: #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; 
+        }
+
+        .example-img:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+
+        /* [Contact Section] */
+        #contact {
+            padding: 120px 0 80px; 
+            text-align: center;
+            border-top: 2px dashed #d0d0d0;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 1.3rem;
+        }
+
+        .contact-email {
+            font-family: var(--font-title); 
+            font-size: 1.6rem;
+        }
+
+        .sns-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 1.2rem;
+        }
+
+
+        /* [Modal Style] */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(50, 50, 50, 0.5); 
+            backdrop-filter: blur(2px);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease; 
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-color); 
+            width: 90%;
+            max-width: 600px;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #eee;
+
+            transform: scale(0.8) translateY(30px);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            color: #999;
+            transition: color 0.3s;
+        }
+        
+        .modal-close:hover { color: #333; }
+
+        .modal-img {
+            width: auto;
+            max-width: 100%;
+            max-height: 400px; 
+            border-radius: 8px; 
+            object-fit: contain;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 1.1rem;
+            color: #666;
+            white-space: pre-line; 
+        }
+
+        /* ----------------------------------------------------------- */
+        /* [Sticker Style] */
+        /* ----------------------------------------------------------- */
+        
+        .sticker {
+            position: fixed;
+            z-index: 900; 
+            pointer-events: none; 
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); 
+        }
+
+        @keyframes hold-motion-1 {
+            0%, 49% { transform: rotate(-7deg) scale(1); }
+            50%, 100% { transform: rotate(3deg) scale(0.98); }
+        }
+
+        @keyframes hold-motion-2 {
+            0%, 49% { transform: rotate(6deg) translateY(0); }
+            50%, 100% { transform: rotate(-4deg) translateY(-5px); }
+        }
+
+        @keyframes hold-motion-3 {
+            0%, 49% { transform: rotate(-2deg); }
+            50%, 100% { transform: rotate(8deg); }
+        }
+
+        .sticker-1 {
+            top: 35vh;   
+            left: 3vw;   
+            width: 220px;
+            animation: hold-motion-1 1s infinite steps(1); 
+        }
+
+        .sticker-2 {
+            top: 140px; 
+            right: 8vw;  
+            width: 160px;
+            animation: hold-motion-2 1s infinite steps(1); 
+        }
+
+        .sticker-3 {
+            bottom: 10vh; 
+            right: 5vw;   
+            width: 200px;
+            animation: hold-motion-3 1s infinite steps(1); 
+        }
+
+
+        /* [Mobile Responsive] */
+        @media (max-width: 1024px) {
+            .sticker { display: none; }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --section-gap: 150px; 
+                --nav-height: 100px;
+            }
+            body { font-size: 1.1rem; }
+            .intro-title { font-size: 2.2rem; }
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .chart-container {
+                height: 180px; 
+            }
+            .bar-value {
+                font-size: 0.7rem; 
+            }
+            .archive-grid {
+                grid-template-columns: repeat(2, 1fr); 
+                column-gap: 15px;
+                row-gap: 40px;
+            }
+            .example-grid {
+                grid-template-columns: 1fr; 
+                gap: 20px;
+            }
+            #example { margin-bottom: 200px; }
+            #contact { padding-top: 80px; } 
+            
+            #intro { min-height: calc(85vh - var(--nav-height)); }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="illust8.png" alt="Fashion Deco" class="sticker sticker-1">
+    <img src="illust9.png" alt="Camera Deco" class="sticker sticker-2">
+    <img src="illiust10.png" alt="Music Deco" class="sticker sticker-3">
+
+
+    <nav>
+        <a href="#" class="nav-logo">당근일기</a>
+        <ul class="nav-list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#archive">Archive</a></li>
+            <li><a href="#example">Look Inside</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+        <section id="intro">
+            <h1 class="intro-title animate-on-scroll delay-1">
+                여기, 중고거래에 중독되어버린<br>
+                사람의 이야기가 있다??
+            </h1>
+            <p class="intro-text animate-on-scroll delay-2">
+                A SSUL of one miserable person,<br>who had been addicted to Second-hand trade app
+            </p>
+            
+            <div class="scroll-hint animate-on-scroll delay-2">
+                <span>스크롤해서 더보기</span>
+                <span>↓</span>
+            </div>
+        </section>
+
+
+        <section id="about">
+            <div class="about-grid">
+                <img src="illust1.png" alt="Book Cover" class="about-img animate-on-scroll">
+                
+                <div class="about-text animate-on-scroll delay-2">
+                    <h2>시놉시스</h2>
+                    <p>
+                        그저 평범하게 전역을 기다리고 있던 한 청년.<br><br>
+                        그런 그가 갑자기 '중고거래 어플'에 눈을 뜨며 이야기는 시작된다.
+                        처음에는 재미로 시작했던 거래의 빈도는 점차 늘어만 가는데....
+                        과연 이 청년은 중고거래의 늪에서 벗어날 수 있을 것인가?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="spending-stats" class="animate-on-scroll">
+            
+            <h3 class="spending-title">
+                이 사람은 지금까지<br>
+                이렇게나 많은 돈을 썼습니다!
+            </h3>
+            
+            <div class="chart-wrapper">
+                <div class="chart-container">
+                    <div class="bar-group">
+                        <span class="bar-value">124만원</span>
+                        <div class="bar" style="height: 100%;"></div>
+                        <span class="bar-label">1월</span>
+                    </div>
+                    <div class="bar-group">
+                        <span class="bar-value">51.5만원</span>
+                        <div class="bar" style="height: 41%;"></div>
+                        <span class="bar-label">2월</span>
+                    </div>
+                    <div class="bar-group">
+                        <span class="bar-value">36만원</span>
+                        <div class="bar" style="height: 29%;"></div>
+                        <span class="bar-label">3월</span>
+                    </div>
+                    <div class="bar-group">
+                        <span class="bar-value">5.5만원</span>
+                        <div class="bar" style="height: 4.5%;"></div>
+                        <span class="bar-label">4월</span>
+                    </div>
+                    <div class="bar-group">
+                        <span class="bar-value">36만원</span>
+                        <div class="bar" style="height: 29%;"></div>
+                        <span class="bar-label">5월</span>
+                    </div>
+                    <div class="bar-group">
+                        <span class="bar-value" style="color: #ff6f0f; font-weight:bold;">43만원</span>
+                        <div class="bar highlight" style="height: 35%;"></div>
+                        <span class="bar-label" style="font-weight:bold; color:#ff6f0f;">6월</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="manner-section animate-on-scroll delay-2">
+                <h3 class="manner-title">나의 매너온도 변화</h3>
+                <span class="manner-highlight">36.5℃ &rarr; 60.7℃</span>
+                
+                <svg class="line-chart-svg" viewBox="0 0 600 200">
+                    <defs>
+                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ffaa71;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff6f0f;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+
+                    <line x1="50" y1="180" x2="550" y2="180" stroke="#eee" stroke-width="2" />
+                    <line x1="50" y1="20" x2="550" y2="20" stroke="#eee" stroke-width="2" />
+
+                    <path class="chart-line-path" 
+                          d="M50 160 L150 145 L250 120 L350 90 L450 55 L550 25" />
+
+                    <circle class="chart-point" cx="50" cy="160" />
+                    <circle class="chart-point" cx="150" cy="145" />
+                    <circle class="chart-point" cx="250" cy="120" />
+                    <circle class="chart-point" cx="350" cy="90" />
+                    <circle class="chart-point" cx="450" cy="55" />
+                    <circle class="chart-point" cx="550" cy="25" />
+
+                    <text x="50" y="195" class="chart-text">36.5</text>
+                    <text x="550" y="55" class="chart-text" style="fill:#ff6f0f; font-weight:bold;">60.7</text>
+                    
+                    <text x="50" y="215" class="chart-text" style="font-size:12px; fill:#999;">1월</text>
+                    <text x="550" y="215" class="chart-text" style="font-size:12px; fill:#999;">6월</text>
+                </svg>
+            </div>
+
+        </section>
+        <section id="archive">
+            <h2 class="archive-header animate-on-scroll">Collected Pieces</h2>
+            <div class="archive-grid">
+                
+                <div class="archive-item animate-on-scroll" data-title="스카이 더블아이폰" data-desc="가격: 50,000원 &#10;특징: 귀여운 디자인과 양방향 영싱통화가 가능하다.">
+                    <div class="archive-img-wrapper">
+                        <img src="illust2.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">스카이 더블아이폰</span>
+                </div>
+
+                <div class="archive-item animate-on-scroll delay-1" data-title="삼성 빈티지 디카" data-desc="가격: 180,000원 &#10;특징: 색감이 쨍해 풍경사진에 강하며 화면이 뒤집힌다.">
+                    <div class="archive-img-wrapper">
+                        <img src="illust3.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">삼성 빈티지 디카</span>
+                </div>
+
+                <div class="archive-item animate-on-scroll delay-2" data-title="닌텐도 DSi" data-desc="가격: 80,000원 &#10;특징: 하단의 화면이 세월에 의해 살짝 바랬다.">
+                    <div class="archive-img-wrapper">
+                        <img src="illust4.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">닌텐도 DSi</span>
+                </div>
+
+                <div class="archive-item animate-on-scroll" data-title="금성사 빈티지 캠코더" data-desc="가격: 30,000원 &#10;특징: 외부 화면을 연결하면 노이즈가 들린다.">
+                    <div class="archive-img-wrapper">
+                        <img src="illust5.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">금성사 빈티지 캠코더</span>
+                </div>
+
+                <div class="archive-item animate-on-scroll delay-1" data-title="보스 노이즈 캔슬링 헤드폰" data-desc="가격: 200,000원 &#10;특징: 소리를 매우 잘 막아주어 공부 중에 사용하면 좋다.">
+                    <div class="archive-img-wrapper">이 일품
+                        <img src="illust6.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">보스 노이즈 캔슬링 헤드폰</span>
+                </div>
+
+                <div class="archive-item animate-on-scroll delay-2" data-title="갤럭시 폴더2 폴더폰" data-desc="가격: 100,000원 &#10;특징: 소프트웨어 버전이 낮아 카카오톡 사용 불가.">
+                    <div class="archive-img-wrapper">
+                        <img src="illust7.png" class="archive-img">
+                    </div>
+                    <span class="archive-title">갤럭시 폴더2 폴더폰</span>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="example">
+            <h2 class="example-header animate-on-scroll">Look Inside</h2>
+            <div class="example-grid">
+                
+                <img src="page1.png" 
+                     alt="Inside Page 1" 
+                     class="example-img animate-on-scroll"
+                     data-title="INTRO">
+                
+                <img src="page2.png" 
+                     alt="Inside Page 2" 
+                     class="example-img animate-on-scroll delay-1"
+                     data-title="1부 : 중독이 되기까지">
+                <img src="page3.png" 
+                     alt="Inside Page 3" 
+                     class="example-img animate-on-scroll"
+                     data-title="2부 : 제 소비를 고백합니다">
+                
+                <img src="page4.png" 
+                     alt="Inside Page 4" 
+                     class="example-img animate-on-scroll delay-1"
+                     data-title="3부: 중독과 탈출 사이">
+            </div>
+        </section>
+
+        <section id="contact" class="animate-on-scroll">
+            <div class="contact-info">
+                <p>궁금한 점이나 나누고 싶은 이야기가 있나요?</p>   
+                <a class="contact-email">alstjr2057@naver.com</a>
+                <div class="sns-links">
+                    <a href="https://www.instagram.com/post_designerseok/">Instagram</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="itemModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img src="" alt="Detail Image" class="modal-img" id="modalImg">
+            <h3 class="modal-title" id="modalTitle">Title</h3>
+            <p class="modal-desc" id="modalDesc">Description</p>
+        </div>
+    </div>
+
+    <script>
+        // 1. Scroll Animation
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(element => {
+            observer.observe(element);
+        });
+
+        // 2. Modal Logic
+        const modal = document.getElementById('itemModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const closeBtn = document.querySelector('.modal-close');
+        
+        const clickableItems = document.querySelectorAll('.archive-item, .example-img');
+
+        clickableItems.forEach(item => {
+            item.addEventListener('click', () => {
+                let imgSrc;
+                if (item.tagName === 'IMG') {
+                    imgSrc = item.src;
+                } else {
+                    imgSrc = item.querySelector('img').src;
+                }
+                
+                const title = item.getAttribute('data-title');
+                const desc = item.getAttribute('data-desc');
+
+                modalImg.src = imgSrc;
+                modalTitle.textContent = title;
+                modalDesc.textContent = desc;
+
+                modal.classList.add('active');
+            });
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    </script>
+
+</body>
+</html> 
