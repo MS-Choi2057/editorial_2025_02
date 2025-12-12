@@ -6,7 +6,6 @@
     <title>당근일기 - Second-hand Diary</title>
     
     <style>
-        /* [폰트 불러오기] */
         @font-face {
             font-family: 'EF_jejudoldam';
             src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2210-EF@1.0/EF_jejudoldam.woff2') format('woff2');
@@ -23,7 +22,6 @@
             font-display: swap;
         }
 
-        /* [기본 설정] */
         :root {
             --bg-color: #FFFFFF;
             --text-color: #333333;
@@ -68,7 +66,7 @@
             opacity: 0.6;
         }
 
-        h1, h2, h3, .nav-logo, .archive-header, .intro-title, .modal-title, .example-header, .spending-title, .manner-title {
+        h1, h2, h3, .nav-logo, .archive-header, .intro-title, .modal-title, .example-header, .spending-title, .manner-title, .hidden-trades-header, .book-cta-text {
             font-family: var(--font-title);
         }
 
@@ -77,7 +75,6 @@
             margin-bottom: 30px;
         }
 
-        /* [레이아웃 공통] */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -86,7 +83,6 @@
             z-index: 10; 
         }
 
-        /* --- 스크롤 애니메이션 --- */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(40px);
@@ -144,8 +140,6 @@
             font-family: var(--font-body);
         }
 
-
-        /* [Intro Section] */
         #intro {
             min-height: calc(100vh - var(--nav-height)); 
             display: flex;
@@ -182,8 +176,6 @@
             cursor: default;
         }
 
-
-        /* [About Section] */
         #about {
             margin-bottom: var(--section-gap);
         }
@@ -207,7 +199,6 @@
             word-break: keep-all;
         }
 
-        /* [Spending Stats Section] */
         #spending-stats {
             margin-bottom: var(--section-gap);
             text-align: center;
@@ -223,7 +214,7 @@
         .chart-wrapper {
             max-width: 600px;
             margin: 0 auto; 
-            margin-bottom: 60px; /* 매너온도 그래프와의 간격 */
+            margin-bottom: 60px;
         }
 
         .chart-container {
@@ -285,10 +276,6 @@
             color: #555;
         }
 
-        /* ----------------------------------------------------------- */
-        /* [추가된 부분] 매너온도 꺾은선 그래프 스타일 */
-        /* ----------------------------------------------------------- */
-        
         .manner-section {
             max-width: 600px;
             margin: 0 auto;
@@ -318,7 +305,6 @@
             overflow: visible;
         }
 
-        /* SVG 라인 애니메이션 */
         .chart-line-path {
             fill: none;
             stroke: #ff6f0f;
@@ -326,46 +312,40 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             stroke-dasharray: 1000; 
-            stroke-dashoffset: 1000; /* 처음엔 숨김 */
-            transition: stroke-dashoffset 2s ease-out 0.5s; /* 0.5초 딜레이 후 그려짐 */
+            stroke-dashoffset: 1000; 
+            transition: stroke-dashoffset 2s ease-out 0.5s; 
         }
 
         .animate-on-scroll.is-visible .chart-line-path {
-            stroke-dashoffset: 0; /* 슥 그려짐 */
+            stroke-dashoffset: 0; 
         }
 
-        /* 포인트 점 */
         .chart-point {
             fill: #fff;
             stroke: #ff6f0f;
             stroke-width: 3;
             r: 5;
             opacity: 0;
-            transition: opacity 0.3s ease 2s; /* 라인이 다 그려진 후 등장 */
+            transition: opacity 0.3s ease 2s; 
         }
 
         .animate-on-scroll.is-visible .chart-point {
             opacity: 1;
         }
 
-        /* 텍스트 라벨 */
         .chart-text {
             font-family: var(--font-body);
             font-size: 14px;
             fill: #666;
             text-anchor: middle;
             opacity: 0;
-            transition: opacity 0.5s ease 2.2s; /* 점보다 조금 늦게 등장 */
+            transition: opacity 0.5s ease 2.2s; 
         }
 
         .animate-on-scroll.is-visible .chart-text {
             opacity: 1;
         }
 
-        /* ----------------------------------------------------------- */
-
-
-        /* [Archive Section] */
         #archive {
             margin-bottom: var(--section-gap);
         }
@@ -416,10 +396,81 @@
             font-weight: normal; 
         }
 
+        #hidden-trades {
+            margin-bottom: var(--section-gap);
+            text-align: center;
+            position: relative;
+        }
 
-        /* [Example Section] */
+        .hidden-trades-header {
+            font-size: 2rem;
+            margin-bottom: 50px;
+            text-decoration: underline;
+            text-underline-offset: 6px;
+        }
+
+        .hidden-trades-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 600px; 
+        }
+
+        .hidden-trades-img {
+            width: auto;
+            max-width: 65%; 
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .scroll-reaction-text {
+            position: absolute;
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: #ff6f0f;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            z-index: 0;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+
+        .reaction-left {
+            left: 0%;
+            transform: translateX(-50px) rotate(-10deg);
+            text-align: left;
+        }
+
+        .reaction-right {
+            right: 0%;
+            transform: translateX(50px) rotate(10deg);
+            text-align: right;
+        }
+
+        .animate-on-scroll.is-visible .reaction-left {
+            opacity: 1;
+            transform: translateX(20px) rotate(-10deg);
+        }
+
+        .animate-on-scroll.is-visible .reaction-right {
+            opacity: 1;
+            transform: translateX(-20px) rotate(10deg);
+        }
+
+        .reaction-1 { top: 10%; }
+        .reaction-2 { top: 30%; }
+        .reaction-3 { top: 50%; }
+        .reaction-4 { top: 70%; }
+        .reaction-5 { top: 90%; }
+
+        /* 수정됨: 여백을 300px에서 100px로 줄임 */
         #example {
-            margin-bottom: 300px; 
+            margin-bottom: 100px; 
         }
 
         .example-header {
@@ -452,8 +503,34 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
+        /* 추가됨: 책 홍보 섹션 스타일 */
+        #book-cta {
+            text-align: center;
+            margin-bottom: 200px; /* Contact 섹션과의 간격 */
+            padding: 0 20px;
+        }
 
-        /* [Contact Section] */
+        .book-cta-text {
+            font-family: var(--font-title); /* 제목 폰트 사용 */
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            color: var(--text-color);
+            line-height: 1.4;
+        }
+
+        .book-cta-img {
+            max-width: 350px; /* 이미지 최대 크기 제한 */
+            width: 80%;       /* 모바일 대응 */
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); /* 그림자 효과 */
+            transition: transform 0.3s ease;
+        }
+
+        .book-cta-img:hover {
+            transform: scale(1.03) rotate(-2deg); /* 마우스 올렸을 때 살짝 움직임 */
+        }
+
         #contact {
             padding: 120px 0 80px; 
             text-align: center;
@@ -481,7 +558,6 @@
         }
 
 
-        /* [Modal Style] */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -552,10 +628,6 @@
             color: #666;
             white-space: pre-line; 
         }
-
-        /* ----------------------------------------------------------- */
-        /* [Sticker Style] */
-        /* ----------------------------------------------------------- */
         
         .sticker {
             position: fixed;
@@ -600,8 +672,6 @@
             animation: hold-motion-3 1s infinite steps(1); 
         }
 
-
-        /* [Mobile Responsive] */
         @media (max-width: 1024px) {
             .sticker { display: none; }
         }
@@ -628,11 +698,23 @@
                 column-gap: 15px;
                 row-gap: 40px;
             }
+            /* Hidden Trades Mobile */
+            .hidden-trades-img {
+                max-width: 85%;
+            }
+            .scroll-reaction-text {
+                font-size: 1.1rem;
+                z-index: 2;
+            }
+            
+            .reaction-left { left: 2%; }
+            .reaction-right { right: 2%; }
             .example-grid {
                 grid-template-columns: 1fr; 
                 gap: 20px;
             }
-            #example { margin-bottom: 200px; }
+            /* 수정됨: 모바일에서도 여백 축소 */
+            #example { margin-bottom: 80px; }
             #contact { padding-top: 80px; } 
             
             #intro { min-height: calc(85vh - var(--nav-height)); }
@@ -701,9 +783,9 @@
             <div class="chart-wrapper">
                 <div class="chart-container">
                     <div class="bar-group">
-                        <span class="bar-value">124만원</span>
-                        <div class="bar" style="height: 100%;"></div>
-                        <span class="bar-label">1월</span>
+                        <span class="bar-value" style="color: #ff6f0f; font-weight:bold;">124만원</span>
+                        <div class="bar highlight" style="height: 100%;"></div>
+                        <span class="bar-label" style="font-weight:bold; color:#ff6f0f;">1월</span>
                     </div>
                     <div class="bar-group">
                         <span class="bar-value">51.5만원</span>
@@ -726,15 +808,15 @@
                         <span class="bar-label">5월</span>
                     </div>
                     <div class="bar-group">
-                        <span class="bar-value" style="color: #ff6f0f; font-weight:bold;">43만원</span>
-                        <div class="bar highlight" style="height: 35%;"></div>
-                        <span class="bar-label" style="font-weight:bold; color:#ff6f0f;">6월</span>
+                        <span class="bar-value">43만원</span>
+                        <div class="bar" style="height: 35%;"></div>
+                        <span class="bar-label">6월</span>
                     </div>
                 </div>
             </div>
 
             <div class="manner-section animate-on-scroll delay-2">
-                <h3 class="manner-title">나의 매너온도 변화</h3>
+                <h3 class="manner-title">매너온도는 이렇게나 올랐습니다!</h3>
                 <span class="manner-highlight">36.5℃ &rarr; 60.7℃</span>
                 
                 <svg class="line-chart-svg" viewBox="0 0 600 200">
@@ -761,8 +843,6 @@
                     <text x="50" y="195" class="chart-text">36.5</text>
                     <text x="550" y="55" class="chart-text" style="fill:#ff6f0f; font-weight:bold;">60.7</text>
                     
-                    <text x="50" y="215" class="chart-text" style="font-size:12px; fill:#999;">1월</text>
-                    <text x="550" y="215" class="chart-text" style="font-size:12px; fill:#999;">6월</text>
                 </svg>
             </div>
 
@@ -800,7 +880,7 @@
                 </div>
 
                 <div class="archive-item animate-on-scroll delay-1" data-title="보스 노이즈 캔슬링 헤드폰" data-desc="가격: 200,000원 &#10;특징: 소리를 매우 잘 막아주어 공부 중에 사용하면 좋다.">
-                    <div class="archive-img-wrapper">이 일품
+                    <div class="archive-img-wrapper">
                         <img src="illust6.png" class="archive-img">
                     </div>
                     <span class="archive-title">보스 노이즈 캔슬링 헤드폰</span>
@@ -813,6 +893,18 @@
                     <span class="archive-title">갤럭시 폴더2 폴더폰</span>
                 </div>
 
+            </div>
+        </section>
+
+        <section id="hidden-trades">
+            <h2 class="hidden-trades-header animate-on-scroll">이 외에도 거래한 물건들이...</h2>
+            <div class="hidden-trades-container">
+                <span class="scroll-reaction-text reaction-left reaction-1 animate-on-scroll delay-1">아니 저게 맞아??</span>
+                <span class="scroll-reaction-text reaction-right reaction-2 animate-on-scroll delay-2">돈이 썩어나나봐</span>
+                <span class="scroll-reaction-text reaction-left reaction-3 animate-on-scroll delay-3">어디까지 내려가는 거에요?</span>
+                <span class="scroll-reaction-text reaction-right reaction-4 animate-on-scroll">도대체 얼마를 쓴건지 원</span>
+                <span class="scroll-reaction-text reaction-left reaction-5 animate-on-scroll delay-1">이거 진짜에요??</span>
+                <img src="record.png" alt="More Hidden Trades">
             </div>
         </section>
 
@@ -841,6 +933,14 @@
             </div>
         </section>
 
+        <section id="book-cta" class="animate-on-scroll">
+            <p class="book-cta-text">
+                내용이 더 알고 싶다면<br>
+                이 책을 읽어보세요!
+            </p>
+            <img src="book_cover.png" alt="당근일기 표지" class="book-cta-img">
+        </section>
+
         <section id="contact" class="animate-on-scroll">
             <div class="contact-info">
                 <p>궁금한 점이나 나누고 싶은 이야기가 있나요?</p>   
@@ -862,7 +962,6 @@
     </div>
 
     <script>
-        // 1. Scroll Animation
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -884,7 +983,6 @@
             observer.observe(element);
         });
 
-        // 2. Modal Logic
         const modal = document.getElementById('itemModal');
         const modalImg = document.getElementById('modalImg');
         const modalTitle = document.getElementById('modalTitle');
@@ -925,4 +1023,4 @@
     </script>
 
 </body>
-</html> 
+</html>
